@@ -1,0 +1,13 @@
+POST http://127.0.0.1:3333/register HTTP/1.1
+content-type: application/json
+
+{
+  "firstname": "walid",
+  "lastname": "gueta",
+  "mail": "wawa@gma.com",
+  "password": "123456"
+}
+
+###
+
+GET http://127.0.0.1:3333 HTTP/1.1
