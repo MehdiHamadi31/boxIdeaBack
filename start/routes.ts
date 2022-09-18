@@ -19,10 +19,21 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-
+// la route register fera appel au controller de connexion 
 Route.post('/register', 'ConnexionsController.register')
-Route.get('/', 'ConnexionsController.login')
-// Route.get('/', 'ConnexionsController.login')
-// Route.get('/', 'ConnexionsController.login')
-// Route.get('/', 'ConnexionsController.login')
-// Route.get('/', 'ConnexionsController.login')
+Route.post('/', 'ConnexionsController.login')
+
+Route.group(()=>{// on groupe les routes qui auront besoin d 'utiliser le middleware
+    // le middleware nous permet de ne pas recopier le code dans chaque controller
+    //on l appel par le nom que lon lui a donné dans le fichier kernel.ts
+    Route.get('/members/all', 'MembersController.all')
+    Route.get('/logout', 'ConnexionsController.logout')
+    Route.get('/projects/all', 'ProjectsController.all')
+    Route.post('/projects/create', 'ProjectsController.create')
+    Route.post('/votes', 'VotesController.vote')
+
+
+}).middleware('auth')
+
+
+

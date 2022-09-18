@@ -7,7 +7,7 @@ export default class Project extends BaseModel {
   public id: number
 
   @column()
-  public member_id: number
+  public memberId: number
 
   @column()
   public title: string
@@ -19,5 +19,5 @@ export default class Project extends BaseModel {
   public votes: HasMany<typeof Vote>
 
   @belongsTo(() => Member)
-  public user: BelongsTo<typeof Member>
+  public member: BelongsTo<typeof Member>
 }

@@ -4,10 +4,10 @@ import Project from './Project'
 
 export default class Vote extends BaseModel {
   @column()
-  public member_id: number
+  public memberId: number
 
   @column()
-  public project_id: number
+  public projectId: number
 
   @belongsTo(() => Member)
   public member: BelongsTo<typeof Member>

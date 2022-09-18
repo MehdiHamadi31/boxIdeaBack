@@ -1,76 +1,31 @@
-import { GuardsList } from '@ioc:Adonis/Addons/Auth'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { AuthenticationException } from '@adonisjs/auth/build/standalone'
+import Env from '@ioc:Adonis/Core/Env'
 
-/**
- * Auth middleware is meant to restrict un-authenticated access to a given route
- * or a group of routes.
- *
- * You must register this middleware inside `start/kernel.ts` file under the list
- * of named middleware.
- */
+/*
+L'intergiciel d'authentification est destiné à restreindre l'accès non authentifié à une route donnée ou à un groupe de routes.
+ ou un groupe de routes.
+ 
+ Vous devez enregistrer ce middleware dans le fichier `start/kernel.ts` sous la liste
+ liste des middleware nommés.*/
 export default class AuthMiddleware {
-  /**
-   * The URL to redirect to when request is Unauthorized
-   */
-  protected redirectTo = '/login'
-
-  /**
-   * Authenticates the current HTTP request against a custom set of defined
-   * guards.
-   *
-   * The authentication loop stops as soon as the user is authenticated using any
-   * of the mentioned guards and that guard will be used by the rest of the code
-   * during the current request.
-   */
-  protected async authenticate(auth: HttpContextContract['auth'], guards: (keyof GuardsList)[]) {
-    /**
-     * Hold reference to the guard last attempted within the for loop. We pass
-     * the reference of the guard to the "AuthenticationException", so that
-     * it can decide the correct response behavior based upon the guard
-     * driver
-     */
-    let guardLastAttempted: string | undefined
-
-    for (let guard of guards) {
-      guardLastAttempted = guard
-
-      if (await auth.use(guard).check()) {
-        /**
-         * Instruct auth to use the given guard as the default guard for
-         * the rest of the request, since the user authenticated
-         * succeeded here
-         */
-        auth.defaultGuard = guard
-        return true
-      }
-    }
-
-    /**
-     * Unable to authenticate using any guard
-     */
-    throw new AuthenticationException(
-      'Unauthorized access',
-      'E_UNAUTHORIZED_ACCESS',
-      guardLastAttempted,
-      this.redirectTo,
-    )
-  }
-
   /**
    * Handle request
    */
-  public async handle (
-    { auth }: HttpContextContract,
-    next: () => Promise<void>,
-    customGuards: (keyof GuardsList)[]
-  ) {
-    /**
-     * Uses the user defined guards or the default guard mentioned in
-     * the config file
-     */
-    const guards = customGuards.length ? customGuards : [auth.name]
-    await this.authenticate(auth, guards)
-    await next()
+  public async handle(ctx: HttpContextContract, next) {
+    if (Env.get('NODE_ENV') === 'development'){
+     await next()
+     return 
+    
+    }
+    try {
+      //avant de renvoyer la liste des membres il nous faut verifier que l user est authentifier
+      await ctx.auth.authenticate()// authenticate() verifie les cookies afin de savoir si on est bien authentifié ou pas
+      await next() //Si on est authentifié next()permet de passer a la suite ,un autre middleware ou alors le controller
+    } catch (error) {
+      return ctx.response.send({
+        login: false,
+        error: true,
+      })
+    }
   }
 }

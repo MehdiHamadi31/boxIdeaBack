@@ -4,6 +4,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class ConnexionsController {
   public async register(ctx: HttpContextContract) {
+    //async permet d'utiliser utiliser await pour faire des taches en fond
     try {
       const { firstname, lastname, mail, password } = ctx.request.body()
 
@@ -11,10 +12,12 @@ export default class ConnexionsController {
       member.firstname = firstname
       member.lastname = lastname
       member.mail = mail
-      member.password = await Hash.make(password)
-      await member.save()
+      member.password = await Hash.make(password) //va hacher le mdp
+      await member.save() // va nous sauvegarder le membre crée
 
-      await ctx.auth.use('web').attempt(mail, password)
+      // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
+      // ok il crée une session (et lui attribut des cookies), il est connecté d office
+      await ctx.auth.attempt(mail, password)
 
       return {
         login: true,
@@ -28,7 +31,44 @@ export default class ConnexionsController {
     }
   }
 
-  public async login({ request, auth }: HttpContextContract) {
-    return 'login'
+  public async login(
+    ctx: HttpContextContract // on prend le ctx de la requete qui est de type HttpContextContract
+  ) {
+    try {
+      // on cree une const mail dans laquelle sera stockée le mail present dans le body de la requete du contexte.
+      const mail = ctx.request.body().mail
+
+      // on cree une const password dans laquelle sera stockée le password present dans le body de la requete du contexte.
+      const password = ctx.request.body().password
+
+      // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
+      // ok il crée une session (et lui attribut des cookies), il est connecté d office
+      await ctx.auth.attempt(mail, password)
+
+      return {
+        login: true,
+        error: false,
+      }
+    } catch (error) {
+      return {
+        login: false,
+        error: true,
+      }
+    }
+  }
+
+  public async logout(ctx: HttpContextContract) {
+    try {
+      await ctx.auth.logout()
+      return {
+        login: false,
+        error: false,
+      }
+    } catch (error) {
+      return {
+        login: true,
+        error: true,
+      }
+    }
   }
 }
