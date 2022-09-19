@@ -57,7 +57,11 @@ export default class ConnexionsController {
     }
   }
 
-  public async logout(ctx: HttpContextContract) {
+  public async logout(ctx: HttpContextContract) {/* on prend le context de type httpContext
+  on essait d'utiliser la fct logout qui appartient a la classe auth qui appartient elle meme
+  au context si celle ci fonctionne elle nous retourne login false et error false,par contre si elle echoue
+  on passe dans le catch et elle nous retourne login true et error true ==> càd que la personne reste connectée
+  et nous recevons un msg d 'erreur */
     try {
       await ctx.auth.logout()
       return {

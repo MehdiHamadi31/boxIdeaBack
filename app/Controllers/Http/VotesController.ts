@@ -9,12 +9,12 @@ export default class VotesController {
             const memberId = ctx.auth.user!.id // auth recup tout ce qui concerne l authentification,
             // tout ce qui concerne lutilisateur sera ds user et on veut l id.
       
-            const vote = new Vote()
-            vote.projectId = projectId
-            vote.memberId = memberId
+            const vote = new Vote() // on cree un nvx vote 
+            vote.projectId = projectId //on stock l' id du projet que l on recupere  dans le body de la requete
+            vote.memberId = memberId //on stock l' id du membre que l on recupere  dans le body de la requete
       
             await vote.save() // va nous sauvegarder le vote
-            return true
+            return true // si tout se passe bien il nous retourne true et si il y a une erreur on passe dans le catch et il nous retourne alors false
           } catch (error) {
             return false
           }
