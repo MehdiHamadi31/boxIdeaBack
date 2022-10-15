@@ -3,8 +3,8 @@ content-type: application/json
 
 {
   "firstname": "mehdi",
-  "lastname": "gueta",
-  "mail": "jiji@gma.com",
+  "lastname": "guete",
+  "mail": "jijilezzd@gma.com",
   "password": "123456"
 }
 
@@ -14,7 +14,7 @@ POST  http://127.0.0.1:3333 HTTP/1.1
 content-type: application/json
 
 {
-  "mail": "wawa@gma.com",
+  "mail": "jijilezzd@gma.com",
   "password": "123456"
 }
 
@@ -24,4 +24,14 @@ GET http://127.0.0.1:3333/members/all HTTP/1.1
 GET http://127.0.0.1:3333/logout HTTP/1.1
 ###
 GET http://127.0.0.1:3333/projects/all HTTP/1.1
+
+###
+POST  http://127.0.0.1:3333/projects/create HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Aide",
+  "description": "aide dalila a git son boulot",
+  "memberId": 21
+}
 

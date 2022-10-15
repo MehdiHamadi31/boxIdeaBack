@@ -21,17 +21,19 @@ export default class ProjectsController {
     }
   }
   public async all(ctx: HttpContextContract) {
-    const memberId = ctx.auth.user!.id //on recupere l id de la personne connectée qui va faire la requete, user! signifie que l on est sur que l user existe car ici le middleware a deja fait son travail de rejeter la requete si l user n est pas authentifié
-    const projects = await Project.query().preload('member') //on prend tous le membre qui crée le projet (1 seul createur par projet)
+    const memberId = ctx.auth.user!.id //on recupere l id de la personne connectée qui va faire la requete,
+    // user! signifie que l on est sur que l user existe car ici le middleware a deja fait son travail de rejeter la requete
+    // si l user n est pas authentifié!
+    const projects = await Project.query().preload('member') //on prend toutes les infos sur le membre qui crée le projet (1 seul createur par projet)
     const projectsSerialised = projects.map((project) => {
-      // on va parcourir le tableau projects qui contient un model de,projet a chq ligne
-      // et on va le retourner de facon serialisé ( cad : de facon a ce qu il contienne un objet nettoyé de ttes les fctions du model )
+      // on va parcourir le tableau projects qui contient un model de projet a chq ligne
+      // et on va le retourner de facon serialisé ( cad : de facon a ce qu il contienne un objet nettoyé de ttes les fonctions du model )
       //ce qui va nous permettre d avoir un projet modifiable car sans ca le model n est pas modifiable .
       return project.serialize()
     })
     const projectsFinalPromises = projectsSerialised.map(async (project) => {
-      // on fait un seconde map sur chaque projet afin de verifier si les lignes du tableau
-      // contiennent mon iD et l (iD du projet) , un tab sera retourné.
+      // on fait un second map sur chaque projet afin de verifier si les lignes du tableau
+      // contiennent mon iD et l'iD du projet) , un tab sera retourné.
       const projectVoted = await Database.from('votes')
         .where('member_id', memberId)
         .andWhere('project_id', project.id)
@@ -44,7 +46,7 @@ export default class ProjectsController {
       return project
     })
 
-    //on stock dans projetFinal toutes les promesses et on les retourneras au front.
+    //on stock dans projetFinal la resolution de toutes les promesses et on  retourneras au front le resultat de ces promesses!
     const projectFinal = await Promise.all(projectsFinalPromises)
     return projectFinal
   }
