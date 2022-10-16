@@ -12,16 +12,18 @@ export default class AuthMiddleware {
    * Handle request
    */
   public async handle(ctx: HttpContextContract, next) {
-    // if (Env.get('NODE_ENV') === 'development'){
-    //  await next()
-    //  return 
+    if (Env.get('NODE_ENV') === 'development'){
+     await next()
+     return 
     
-    // }
+    }
     try {
       //avant de renvoyer la liste des membres il nous faut verifier que l user est authentifier
-      await ctx.auth.authenticate()// authenticate() verifie les cookies afin de savoir si on est bien authentifié ou pas
+      console.log(ctx.auth.user)
+      await ctx.auth.use('web').authenticate()// authenticate() verifie les cookies afin de savoir si on est bien authentifié ou pas
       await next() //Si on est authentifié next()permet de passer a la suite ,un autre middleware ou alors le controller
     } catch (error) {
+      console.log(error)
       return ctx.response.send({
         login: false,
         error: true,

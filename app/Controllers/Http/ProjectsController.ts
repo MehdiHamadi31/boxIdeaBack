@@ -21,10 +21,10 @@ export default class ProjectsController {
     }
   }
   public async all(ctx: HttpContextContract) {
-    const memberId = ctx.auth.user!.id //on recupere l id de la personne connectée qui va faire la requete,
+    const memberId = 27 //on recupere l id de la personne connectée qui va faire la requete,
     // user! signifie que l on est sur que l user existe car ici le middleware a deja fait son travail de rejeter la requete
     // si l user n est pas authentifié!
-    const projects = await Project.query().preload('member') //on prend toutes les infos sur le membre qui crée le projet (1 seul createur par projet)
+    const projects = await Project.query().preload('member').preload('votes') //on prend toutes les infos sur le membre qui crée le projet (1 seul createur par projet et tous les votes recu par ce projet)
     const projectsSerialised = projects.map((project) => {
       // on va parcourir le tableau projects qui contient un model de projet a chq ligne
       // et on va le retourner de facon serialisé ( cad : de facon a ce qu il contienne un objet nettoyé de ttes les fonctions du model )
@@ -43,6 +43,9 @@ export default class ProjectsController {
 
       //on ajoute une propriété a un projet qui sera = a un booléen
       project.isAlreadyVoted = isAlreadyVoted
+
+      project.totalVotes = project.votes.length
+
       return project
     })
 

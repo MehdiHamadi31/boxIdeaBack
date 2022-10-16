@@ -31,11 +31,9 @@ Route.group(()=>{// on groupe les routes qui auront besoin d 'utiliser le middle
     Route.get('/members/all', 'MembersController.all')
     Route.get('/projects/all', 'ProjectsController.all')
     Route.post('/projects/create', 'ProjectsController.create')
-    Route.post('/votes', 'VotesController.vote')
+    Route.post('/vote', 'VotesController.vote')
     
-    // //j ai ajouté ces routes pour pouvoir realiser le fetch dans index.js
-    // Route.post('/members/all', 'MembersController.all')
-    // Route.post('/projects/all', 'ProjectsController.all')
+   
 
 
 }).middleware('auth')

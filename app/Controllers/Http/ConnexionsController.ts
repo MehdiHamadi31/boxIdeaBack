@@ -44,7 +44,7 @@ export default class ConnexionsController {
       // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
       // ok il crée une session (et lui attribut des cookies), il est connecté d office
       await ctx.auth.attempt(mail, password)
-
+      
       return {
         login: true,
         error: false,
@@ -57,7 +57,8 @@ export default class ConnexionsController {
     }
   }
 
-  public async logout(ctx: HttpContextContract) {/* on prend le context de type httpContext
+  public async logout(ctx: HttpContextContract) {
+    /* on prend le context de type httpContext
   on essait d'utiliser la fct logout qui appartient a la classe auth qui appartient elle meme
   au context si celle ci fonctionne elle nous retourne login false et error false,par contre si elle echoue
   on passe dans le catch et elle nous retourne login true et error true ==> càd que la personne reste connectée
