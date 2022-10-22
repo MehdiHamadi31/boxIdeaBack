@@ -21,7 +21,7 @@ export default class ProjectsController {
     }
   }
   public async all(ctx: HttpContextContract) {
-    const memberId = 27 //on recupere l id de la personne connectée qui va faire la requete,
+    const memberId = ctx.auth.user!.id //on recupere l id de la personne connectée qui va faire la requete,
     // user! signifie que l on est sur que l user existe car ici le middleware a deja fait son travail de rejeter la requete
     // si l user n est pas authentifié!
     const projects = await Project.query().preload('member').preload('votes') //on prend toutes les infos sur le membre qui crée le projet (1 seul createur par projet et tous les votes recu par ce projet)

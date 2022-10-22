@@ -4,6 +4,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class ConnexionsController {
   public async register(ctx: HttpContextContract) {
+    console.log('je suis ici0')
     //async permet d'utiliser utiliser await pour faire des taches en fond
     try {
       const { firstname, lastname, mail, password } = ctx.request.body()
@@ -13,17 +14,34 @@ export default class ConnexionsController {
       member.lastname = lastname
       member.mail = mail
       member.password = await Hash.make(password) //va hacher le mdp
+
+      const profile = ctx.request.file('profile', {
+        size: '2mb',
+        extnames: ['jpg', 'png'],
+      })
+      console.log('je suis ici1')
+      if (profile && profile.isValid) {
+        console.log('je suis ici3')
+
+        await profile.moveToDisk('/profiles')
+        console.log('je suis ici2')
+      } else {
+        throw new Error('bad file')
+      }
       await member.save() // va nous sauvegarder le membre crée
 
       // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
       // ok il crée une session (et lui attribut des cookies), il est connecté d office
-      await ctx.auth.attempt(mail, password)
+      const { token } = await ctx.auth.attempt(mail, password)
 
       return {
         login: true,
         error: false,
+        token,
       }
     } catch (error) {
+      console.log(error);
+      
       return {
         login: false,
         error: true,
@@ -42,12 +60,13 @@ export default class ConnexionsController {
       const password = ctx.request.body().password
 
       // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
-      // ok il crée une session (et lui attribut des cookies), il est connecté d office
-      await ctx.auth.attempt(mail, password)
-      
+      // ok il crée une session (et lui attribut un token), il est connecté d office
+      const { token } = await ctx.auth.attempt(mail, password)
+
       return {
         login: true,
         error: false,
+        token,
       }
     } catch (error) {
       return {

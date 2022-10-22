@@ -6,7 +6,7 @@ export default class VotesController {
         
         try {
             const { projectId } = ctx.request.body()
-            const memberId =27 // auth recup tout ce qui concerne l authentification,
+            const memberId = ctx.auth.user!.id // auth recup tout ce qui concerne l authentification,
             // tout ce qui concerne lutilisateur sera ds user et on veut l id.
       
             const vote = new Vote() // on cree un nvx vote 

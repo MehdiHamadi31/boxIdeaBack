@@ -30,13 +30,14 @@ const bodyParserConfig: BodyParserConfig = {
   */
   json: {
     encoding: 'utf-8',
-    limit: '1mb',
+    limit: '2mb',
     strict: true,
     types: [
       'application/json',
       'application/json-patch+json',
       'application/vnd.api+json',
       'application/csp-report',
+      'multipart/form-data',
     ],
   },
 
