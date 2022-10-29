@@ -30,6 +30,7 @@ Route.group(() => {
   //on l appel par le nom que lon lui a donné dans le fichier kernel.ts
   Route.get('/logout', 'ConnexionsController.logout')
   Route.get('/members/all', 'MembersController.all')
+  Route.post('/member/update', 'MembersController.update')
   Route.get('/projects/all', 'ProjectsController.all')
   Route.post('/projects/create', 'ProjectsController.create')
   Route.post('/vote', 'VotesController.vote')
