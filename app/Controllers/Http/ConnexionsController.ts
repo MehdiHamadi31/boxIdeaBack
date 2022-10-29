@@ -15,19 +15,6 @@ export default class ConnexionsController {
       member.mail = mail
       member.password = await Hash.make(password) //va hacher le mdp
 
-      const profile = ctx.request.file('profile', {
-        size: '2mb',
-        extnames: ['jpg', 'png'],
-      })
-      console.log('je suis ici1')
-      if (profile && profile.isValid) {
-        console.log('je suis ici3')
-
-        await profile.moveToDisk('/profiles')
-        console.log('je suis ici2')
-      } else {
-        throw new Error('bad file')
-      }
       await member.save() // va nous sauvegarder le membre crée
 
       // auth.attempt va verifier dans la bdd si l user existe avec le mot de pass associé et si c 'est
@@ -40,8 +27,8 @@ export default class ConnexionsController {
         token,
       }
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
+
       return {
         login: false,
         error: true,

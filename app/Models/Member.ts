@@ -25,6 +25,9 @@ export default class Member extends BaseModel {
   @column({ serializeAs: null }) // le fait de mettre nul va permettre que le mot de passe ne soit pas renvoyé
   public password: string
 
+  @column()
+  public profile: string
+
   // ici on recup la liste des projets pour lequel il a voté
   @hasMany(() => Vote)
   public votes: HasMany<typeof Vote>

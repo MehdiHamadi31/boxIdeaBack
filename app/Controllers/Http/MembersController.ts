@@ -1,3 +1,4 @@
+import Drive from '@ioc:Adonis/Core/Drive'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Member from 'App/Models/Member'
 
@@ -15,7 +16,6 @@ export default class MembersController {
     return membersFinal
   }
   public async update(ctx: HttpContextContract) {
-    
     const { firstname, lastname, mail } = ctx.request.body()
 
     const member = await Member.find(ctx.auth.user!.id)
@@ -27,19 +27,29 @@ export default class MembersController {
       member!.mail = mail
     }
 
-    // const profile = ctx.request.file('profile', {
-    //   size: '2mb',
-    //   extnames: ['jpg', 'png'],
-    // })
-
-    // if (profile && profile.isValid) {
-    //   await profile.moveToDisk('/profiles')
-    // } else {
-    //   throw new Error('bad file')
-    // }
     await member!.save()
-    
-    
-    return false
+
+    return true
+  }
+
+  public async updateProfile(ctx: HttpContextContract) {
+    const profile = ctx.request.file('profile', {
+      size: '107mb',
+      extnames: ['jpg', 'png'],
+    })
+
+    if (profile && profile.isValid) {
+      const filePath = './' + ctx.auth.user!.mail + '.' + profile.extname
+      await profile.moveToDisk('./', {
+        name: filePath,
+      })
+      const urlToNewFile = await Drive.getUrl(filePath)
+      const member = await Member.find(ctx.auth.user!.id)
+      member!.profile = urlToNewFile
+      await member!.save()
+      return true
+    } else {
+      return false
+    }
   }
 }
