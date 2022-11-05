@@ -44,6 +44,8 @@ export default class ProjectsController {
       //on ajoute une propriété a un projet qui sera = a un booléen
       project.isAlreadyVoted = isAlreadyVoted
 
+      //on ajoute l'attribut owner a projet et on va verifier si l 'id de la personne qui est connecté est le meme que l'id du createur!
+      project.owner = project.member_id === ctx.auth.user!.id
       project.totalVotes = project.votes.length
 
       return project
@@ -52,5 +54,18 @@ export default class ProjectsController {
     //on stock dans projetFinal la resolution de toutes les promesses et on  retourneras au front le resultat de ces promesses!
     const projectFinal = await Promise.all(projectsFinalPromises)
     return projectFinal
+  }
+  //
+
+  //FONCTION DELETE
+  public async delete(ctx: HttpContextContract) {
+    try {
+      const { projectId } = ctx.request.body()
+      const project = await Project.findOrFail(projectId)
+      await project.delete()
+      return true
+    } catch (error) {
+      return false
+    }
   }
 }

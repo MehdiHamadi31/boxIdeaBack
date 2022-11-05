@@ -34,5 +34,9 @@ Route.group(() => {
   Route.post('/member/update', 'MembersController.update')
   Route.post('/member/update/profile', 'MembersController.updateProfile')
   Route.post('/projects/create', 'ProjectsController.create')
+  
+  Route.post('/projects/delete', 'ProjectsController.delete')
+  
+
   Route.post('/vote', 'VotesController.vote')
 }).middleware('auth')

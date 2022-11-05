@@ -4,7 +4,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class ConnexionsController {
   public async register(ctx: HttpContextContract) {
-    console.log('je suis ici0')
+    
     //async permet d'utiliser utiliser await pour faire des taches en fond
     try {
       const { firstname, lastname, mail, password } = ctx.request.body()

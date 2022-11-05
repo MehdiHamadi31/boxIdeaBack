@@ -33,23 +33,32 @@ export default class MembersController {
   }
 
   public async updateProfile(ctx: HttpContextContract) {
+    
+    
     const profile = ctx.request.file('profile', {
       size: '107mb',
-      extnames: ['jpg', 'png'],
+      extnames: ['jpg', 'png', 'jpeg'],
     })
-
+    
     if (profile && profile.isValid) {
+      
       const filePath = './' + ctx.auth.user!.mail + '.' + profile.extname
+
       await profile.moveToDisk('./', {
         name: filePath,
       })
+      
       const urlToNewFile = await Drive.getUrl(filePath)
       const member = await Member.find(ctx.auth.user!.id)
       member!.profile = urlToNewFile
       await member!.save()
+      console.log('putamadre',urlToNewFile);
       return true
+
     } else {
+     
       return false
+      
     }
   }
 }
