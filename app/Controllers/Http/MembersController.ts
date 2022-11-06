@@ -1,6 +1,7 @@
 import Drive from '@ioc:Adonis/Core/Drive'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Member from 'App/Models/Member'
+import { genIdSize } from 'cf-gen-id'
 
 export default class MembersController {
   public async all(ctx: HttpContextContract) {
@@ -33,32 +34,31 @@ export default class MembersController {
   }
 
   public async updateProfile(ctx: HttpContextContract) {
-    
-    
     const profile = ctx.request.file('profile', {
       size: '107mb',
       extnames: ['jpg', 'png', 'jpeg'],
     })
-    
+
     if (profile && profile.isValid) {
-      
-      const filePath = './' + ctx.auth.user!.mail + '.' + profile.extname
+      if (ctx.auth.user!.profile) {
+        const pathToImg = ctx.auth.user!.profile.split('/uploads/')[1]
+
+        await Drive.delete(pathToImg)
+      }
+
+      const filePath = './' + genIdSize(20) + '.' + profile.extname
 
       await profile.moveToDisk('./', {
         name: filePath,
       })
-      
+
       const urlToNewFile = await Drive.getUrl(filePath)
       const member = await Member.find(ctx.auth.user!.id)
       member!.profile = urlToNewFile
       await member!.save()
-      console.log('putamadre',urlToNewFile);
       return true
-
     } else {
-     
       return false
-      
     }
   }
 }

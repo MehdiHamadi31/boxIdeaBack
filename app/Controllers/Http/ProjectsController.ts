@@ -47,13 +47,14 @@ export default class ProjectsController {
       //on ajoute l'attribut owner a projet et on va verifier si l 'id de la personne qui est connecté est le meme que l'id du createur!
       project.owner = project.member_id === ctx.auth.user!.id
       project.totalVotes = project.votes.length
-
+      
+      
       return project
     })
 
     //on stock dans projetFinal la resolution de toutes les promesses et on  retourneras au front le resultat de ces promesses!
     const projectFinal = await Promise.all(projectsFinalPromises)
-    return projectFinal
+    return projectFinal.sort((a, b) => b.totalVotes - a.totalVotes );
   }
   //
 
